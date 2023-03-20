@@ -1,0 +1,9 @@
+<% blogs.forEach(blog => { %>
+<div class="col-md-4 mt-5">
+  <div class="cardPost">
+    <a href="/blog/<%=blog._id%>"><h5><%=blog.title %></h5></a>
+    <p><%=blog.short %></p>
+    <label>Created at: <%=blog.createdAt %></label>
+  </div>
+</div>
+<% }) %>
