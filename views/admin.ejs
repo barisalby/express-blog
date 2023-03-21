@@ -1,28 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <%-include('inc/head')%>
-  </head>
+  <%-include('inc/head')%>
 
-  <body>
-    <header><%-include('inc/Navbar')%></header>
-
-    <main>
-      <section>
-        <div class="container">
-          <div class="row">
-            <a class="mb-3" href="admin/add">New Post</a>
-            <% blogs.forEach(blog => { %>
-            <h5><%=blog.title %></h5>
-            <a href="#"><h5>Delete</h5></a>
-          </div>
+  <main>
+    <section>
+      <div class="container">
+        <div class="row">
+          <a class="mb-3" href="add">New Post</a>
+          <% blogs.forEach(blog => { %>
+          <h5><%=blog.title %></h5>
+          <a class="rm" data-rm="<%=blog._id%>"><h5>Delete</h5></a>
           <% }) %>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
+  </main>
 
-    <footer></footer>
+  <script>
+      const rm = document.querySelectorAll('a.rm')
+      const rmParse = [].slice.call(rm)
 
-    <%-include('inc/Scripts')%>
-  </body>
-</html>
+    rmParse.forEach(rm => {
+      rm.addEventListener('click', function() {
+        const endpoint = `/admin/delete/${rm.dataset.rm}`
+
+        fetch(endpoint, {
+          method: 'DELETE'
+        })
+
+        .then(
+          alert('Content removed.'),
+          location.reload()
+        )
+        .catch((err) => {
+          console.log(err)
+        })
+      })
+    });
+
+  </script>
+
+  <%-include('inc/Footer')%>

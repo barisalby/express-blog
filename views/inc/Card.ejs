@@ -1,6 +1,17 @@
-<% blogs.forEach(blog => { %>
+<% blogs.forEach((blog) => { %>
 <div class="col-md-4 mt-5">
   <div class="cardPost">
+    <% if (!blog.image) { %>
+    <img
+      class="img-fluid mb-3"
+      src="//via.placeholder.com/450"
+      alt="<%=blog.title%> not including cover"
+    />
+
+    <% } else { %>
+    <img class="img-fluid" src="<%=blog.image%>" alt="<%=blog.title%>" />
+    <% } %>
+
     <a href="/blog/<%=blog._id%>"><h5><%=blog.title %></h5></a>
     <p><%=blog.short %></p>
     <label>Created at: <%=blog.createdAt %></label>

@@ -1,4 +1,9 @@
-<form action="" method="post" class="col-md-6 col-12">
+<form
+  action="/admin/add"
+  method="POST"
+  enctype="multipart/form-data"
+  class="col-md-6 col-12"
+>
   <div class="mb-3">
     <label for="title" class="form-label">Title</label>
     <input
@@ -25,6 +30,11 @@
       name="full"
       placeholder="Post Details"
     ></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="image" class="form-label">Upload Image</label>
+    <input class="form-control" type="file" id="file" name="file" />
   </div>
 
   <div class="mb-3">
