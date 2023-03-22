@@ -1,41 +1,47 @@
-  <%-include('inc/head')%>
+<%-include('inc/Head')%>
 
-  <main>
-    <section>
-      <div class="container">
-        <div class="row">
-          <a class="mb-3" href="add">New Post</a>
-          <% blogs.forEach(blog => { %>
+<main>
+  <section>
+    <div class="container">
+      <div class="row">
+        <a class="mb-3" href="add">New Post</a>
+        <% blogs.forEach(blog => { %>
+        <div class="pageList">
           <h5><%=blog.title %></h5>
           <a class="rm" data-rm="<%=blog._id%>"><h5>Delete</h5></a>
-          <% }) %>
         </div>
+        <% }) %>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
+</main>
 
-  <script>
-      const rm = document.querySelectorAll('a.rm')
-      const rmParse = [].slice.call(rm)
+<script>
+  const rm = document.querySelectorAll("a.rm");
+  const rmParse = [].slice.call(rm);
 
-    rmParse.forEach(rm => {
-      rm.addEventListener('click', function() {
-        const endpoint = `/admin/delete/${rm.dataset.rm}`
+  rmParse.forEach((rm) => {
+    rm.addEventListener("click", function (event) {
+      let warn = "Yazıyı silmek istediğinizden emin misiniz?";
+      if (confirm(warn) == true) {
+        event.preventDefault();
+        const endpoint = `/admin/delete/${rm.dataset.rm}`;
 
         fetch(endpoint, {
-          method: 'DELETE'
+          method: "DELETE",
         })
-
-        .then(
-          alert('Content removed.'),
-          location.reload()
-        )
-        .catch((err) => {
-          console.log(err)
-        })
-      })
+          .then((result) => {
+            if (result.ok) {
+              console.log("Blog yazısı silindi.");
+              rm.parentElement.remove();
+            }
+          })
+          .catch((error) => console.error(error));
+      } else {
+        text = "You canceled!";
+      }
     });
+  });
+</script>
 
-  </script>
-
-  <%-include('inc/Footer')%>
+<%-include('inc/Footer')%>

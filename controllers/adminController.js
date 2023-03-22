@@ -1,60 +1,63 @@
-const Blog = require('../models/Blogs')
+const fs = require("fs")
+const path = require('path')
+const Blog = require("../models/Blogs")
 
 const adminIndex = (req, res) => {
-    Blog.find().sort({createdAt: -1})
+  Blog.find()
+    .sort({ createdAt: -1 })
     .then((result) => {
-        res.render('admin', { title: 'Administrator', blogs: result })
+      res.render("admin", { title: "Administrator", blogs: result })
     })
     .catch((err) => {
-        console.log(err)
+      console.log(err)
     })
 }
 
 const adminAdd = (req, res) => {
-    res.render('add', { title: 'Add New Post'})
+  res.render("add", { title: "Add New Post" })
 }
 
-const addPost = (req,res) => {
-    const newPost = new Blog(req.body) 
-     if(req.files) {
-         console.log(req.files)
-         var file = req.files.file
-         var filename = file.name
-         console.log(filename)
- 
-         file.mv('./uploads/' + filename, (err) => {
-             if (err) {
-                 res.status(err.status).render('error', { title: 'Opps!' })
-             } else {
-                 console.log('File uploaded!')
-             }
-         })
-     }
+const addPost = async (req, res) => {
+  try {
+    let imagePath = null
+    const uploadPath = path.join("./public/uploads");
+    !fs.existsSync(uploadPath) ? fs.mkdirSync(uploadPath) : console.log('Folder already exists.')
 
-     newPost.save()
-     .then((result) => {
-      res.redirect('/admin')    
-     })
-     
-     .catch((err) => {
-      console.log(err)
-     })
+    if (req.files && req.files.fileObject) {
+        const file = req.files.fileObject
+        const filename = file.name
+
+        await file.mv(path.join(uploadPath, filename));
+        imagePath = path.join('./uploads/') + filename
+    }
+
+    const postData = { ...req.body, image: imagePath }
+
+    const post = await Blog.create(postData)
+
+    res.redirect("/")
+    
+  } catch (err) {
+    console.log(err)
   }
+}
 
 const deletePost = (req, res) => {
-    const id = req.params.id
-    Blog.findByIdAndDelete(id)
-    .then((result) => {
-        console.log('Content has been removed!')
-    })
-    .catch((err) => {
-        console.log(err)
-    })
+  const id = req.params.id
+  Blog.findByIdAndDelete(id)
+  .then((result) => {
+    console.log("Content has been removed!");
+    res.send("Content has been removed!");
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(500).send(err);
+  })
 }
 
 module.exports = {
-    adminIndex,
-    adminAdd,
-    addPost,
-    deletePost
+  adminIndex,
+  adminAdd,
+  addPost,
+  deletePost,
 }

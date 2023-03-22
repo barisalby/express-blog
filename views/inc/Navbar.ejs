@@ -17,7 +17,11 @@
         <a class="nav-item nav-link" href="/admin/add">Add Post</a>
         <a class="nav-item nav-link active" href="/">Home</a>
         <a class="nav-item nav-link" href="/about">About</a>
-        <a class="nav-item nav-link" href="/login">Login</a>
+        <% if (user) { %>
+          <a class="nav-item nav-link" href="/logout">Logout</a>
+        <% } else { %>
+          <a class="nav-item nav-link" href="/login">Login</a>
+        <% } %>
       </ul>
     </div>
 

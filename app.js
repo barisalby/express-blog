@@ -2,9 +2,12 @@ const express = require('express')
 const fileUpload = require('express-fileupload')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser')
 const Blog = require('./models/Blogs')
 const adminRoutes = require('./routes/adminRoutes')
 const blogRoutes = require('./routes/blogRoutes')
+const authRoutes = require('./routes/authRoutes')
+const { requireAuth, checkUser } = require('./middlewares/authMiddleware')
 
 const app = express()
 const dbURL = "mongodb+srv://barisalbayrak:k1iiPOlIMqjnBCsT@nodeblog.8wqzfia.mongodb.net/node-blog?retryWrites=true&w=majority"
@@ -19,13 +22,16 @@ app.use(express.json());
 app.use(express.static('public'))
 app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'))
+app.use(cookieParser())
 
+app.get('*', checkUser)
 
 app.get('/', (req, res) => {
     res.redirect('/blog')
 })
 
-app.use('/admin', adminRoutes)
+app.use('/', authRoutes)
+app.use('/admin', requireAuth , adminRoutes)
 app.use('/blog', blogRoutes)
 
 
@@ -35,10 +41,6 @@ app.get('/about', (req, res) => {
 
 app.get('/about-us', (req, res) => {
     res.status(301).redirect('/about')
-})
-
-app.get('/login', (req,res) => {
-    res.render('login', {title: 'Login'})
 })
 
 app.use((req, res) => {
